@@ -17,7 +17,7 @@ class FilenameFixer
 		string file_ext = Path.GetExtension(file_path);
 		string file_name_decoded = Uri.UnescapeDataString(file_name) + file_ext;
 
-		string file_path_decoded = String.Format("{0}\\{1}", file_dir, file_name_decoded);
+		string file_path_decoded = Path.Combine(file_dir, file_name_decoded);
 
 		File.Move(file_path, file_path_decoded);
     }
