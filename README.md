@@ -1,3 +1,3 @@
 FilenameCoder
 =============
-Drag&drop(TM) file on exe and see what happens.
+Drag&drop™ any file onto exe and see what happens.
