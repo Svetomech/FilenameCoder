@@ -5,34 +5,34 @@ using System.IO;
 
 namespace SmallProjects
 {
-	class FilenameCoder
-	{
-		private const string app_title = "FilenameCoder";
+    class FilenameCoder
+    {
+        private const string app_title = "FilenameCoder";
 
-		private static void exit()
-		{
+        private static void exit()
+        {
 			MessageBox.Show("No passed argument or an incorrect one.",
-		                    app_title,
-		                    MessageBoxButtons.OK);
+                            app_title,
+                            MessageBoxButtons.OK);
 			Environment.Exit(0);
 		}
 
 		private static DialogResult? askDialog()
 		{
 			return MessageBox.Show("Decode (Yes)  /  Encode (No)",
-		                           app_title,
-							       MessageBoxButtons.YesNoCancel);
+                                   app_title,
+                                   MessageBoxButtons.YesNoCancel);
 		}
 
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			if (args.Length == 0) exit();
+            if (args.Length == 0) exit();
 
 			DialogResult? btn_clicked = null;
-		    for (int i = 0; i < args.Length; ++i)
+            for (int i = 0; i < args.Length; ++i)
 			{
-				string file_path = Path.GetFullPath(args[i]);
+                string file_path = Path.GetFullPath(args[i]);
 				if (!File.Exists(file_path)) exit();
 
 				string file_dir = Path.GetDirectoryName(file_path);
