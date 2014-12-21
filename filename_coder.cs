@@ -36,7 +36,30 @@ namespace SmallProjects
             DialogResult? btn_clicked = null;
             for (int i = 0; i < args.Length; ++i)
             {
+                bool isDirectory = false;
                 string file_path = Path.GetFullPath(args[i]);
+                if (Directory.Exists(file_path)) isDirectory = true;
+
+                if (isDirectory)
+                {
+                    string[] files = Directory.GetFiles(file_path);
+
+                    string[] args_new = new string[args.Length + files.Length];
+
+                    for (int j = 0; j < args.Length; ++j)
+                    {
+                        if (!Directory.Exists(args[j])) args_new[j] = args[j];
+                    }
+                    for (int k = args.Length; k < args.Length + files.Length; ++k)
+                    {
+                        args_new[k] = files[k - args.Length];
+                    }
+
+                    args = args_new;
+
+                    continue;
+                }
+
                 if (!File.Exists(file_path)) continue;
 
                 string file_dir = Path.GetDirectoryName(file_path);
@@ -56,7 +79,7 @@ namespace SmallProjects
 
                 string file_path_coded = Path.Combine(file_dir, file_name_coded);
 
-                bool paths_equal = String.Equals(file_path, file_path_coded, StringComparison.OrdinalIgnoreCase);
+                bool paths_equal = String.Equals(file_path, file_path_coded);
                 bool path_exist = File.Exists(file_path_coded);
                 if (paths_equal)
                 {
