@@ -9,31 +9,35 @@ namespace SmallProjects
     {
         private const string app_title = "FilenameCoder";
 
-        private static void exit()
+        private static DialogResult? MsgBox(string msg,
+                                            MessageBoxButtons buttons)
         {
-            MessageBox.Show("No passed argument or an incorrect one.",
-                            app_title,
-                            MessageBoxButtons.OK);
-            Environment.Exit(0);
+            return MessageBox.Show(msg, app_title, buttons);
         }
 
         private static DialogResult? askDialog()
         {
-            return MessageBox.Show("Decode (Yes)  /  Encode (No)",
-                                   app_title,
-                                   MessageBoxButtons.YesNoCancel);
+            return MsgBox("Encode (Yes)  /  Decode (No)",
+                          MessageBoxButtons.YesNoCancel);
+        }
+
+        private static void exit(bool err = false)
+        {
+            if (err) MsgBox("Please, do drag&drop some file onto me.",
+                            MessageBoxButtons.OK);
+            Environment.Exit(0);
         }
 
         [STAThread]
         public static void Main(string[] args)
         {
-            if (args.Length == 0) exit();
+            if (args.Length == 0) exit(true);
 
             DialogResult? btn_clicked = null;
             for (int i = 0; i < args.Length; ++i)
             {
                 string file_path = Path.GetFullPath(args[i]);
-                if (!File.Exists(file_path)) exit();
+                if (!File.Exists(file_path)) continue;
 
                 string file_dir = Path.GetDirectoryName(file_path);
 
@@ -43,15 +47,29 @@ namespace SmallProjects
                 string file_name_coded;
                 if (btn_clicked == null)
                     btn_clicked = askDialog();
-                if (btn_clicked == DialogResult.Yes)
+                if (btn_clicked == DialogResult.No)
                     file_name_coded = Uri.UnescapeDataString(file_name) + file_ext;
-                else if (btn_clicked == DialogResult.No)
+                else if (btn_clicked == DialogResult.Yes)
                     file_name_coded = Uri.EscapeDataString(file_name) + file_ext;
                 else
-                    return;
+                    break;
 
                 string file_path_coded = Path.Combine(file_dir, file_name_coded);
 
+                bool paths_equal = String.Equals(file_path, file_path_coded, StringComparison.OrdinalIgnoreCase);
+                bool path_exist = File.Exists(file_path_coded);
+                if (paths_equal)
+                {
+                    /* MsgBox(String.Format("File '{0}' is the same with '{1}'.", file_path, file_path_coded),
+                           MessageBoxButtons.OK); */
+                    continue;
+                }
+                if (path_exist)
+                {
+                    MsgBox(String.Format("File '{0}' already exists.", file_path_coded),
+                           MessageBoxButtons.OK);
+                    continue;
+                }
                 File.Move(file_path, file_path_coded);
             }
         }
